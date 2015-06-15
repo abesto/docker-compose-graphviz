@@ -56,7 +56,7 @@ func main() {
 	// Add legend
 	graph.AddSubGraph(project, "cluster_legend", map[string]string{"label": "Legend"})
 	graph.AddNode("cluster_legend", "legend_service", map[string]string{"label": "service"})
-	graph.AddNode("cluster_legend", "legend_service_with_ports", map[string]string{"label": "\"service with ports\\n80:80 443:443\""})
+	graph.AddNode("cluster_legend", "legend_service_with_ports", map[string]string{"label": "\"service with exposed ports\\n80:80 443:443\"", "shape": "box"})
 	graph.AddEdge("legend_service", "legend_service_with_ports", true, map[string]string{"label": "links"})
 	graph.AddEdge("legend_service_with_ports", "legend_service", true, map[string]string{"label": "volumes_from", "style": "dashed"})
 
