@@ -21,6 +21,7 @@ func abort(msg string) {
 type service struct {
 	Links       []string
 	VolumesFrom []string "volumes_from"
+	Volumes     []string
 	Ports       []string
 }
 
@@ -56,7 +57,10 @@ func main() {
 	// Add legend
 	graph.AddSubGraph(project, "cluster_legend", map[string]string{"label": "Legend"})
 	graph.AddNode("cluster_legend", "legend_service", map[string]string{"label": "service"})
-	graph.AddNode("cluster_legend", "legend_service_with_ports", map[string]string{"label": "\"service with exposed ports\\n80:80 443:443\"", "shape": "box"})
+	graph.AddNode("cluster_legend", "legend_service_with_ports",
+		map[string]string{
+			"label": "\"service with exposed ports\\n80:80 443:443\\n--volume1[:host_dir1]\\n--volume2[:host_dir2]\"",
+			"shape": "box"})
 	graph.AddEdge("legend_service", "legend_service_with_ports", true, map[string]string{"label": "links"})
 	graph.AddEdge("legend_service_with_ports", "legend_service", true, map[string]string{"label": "volumes_from", "style": "dashed"})
 
@@ -66,6 +70,9 @@ func main() {
 		if service.Ports != nil {
 			attrs["label"] += "\\n" + strings.Join(service.Ports, " ")
 			attrs["shape"] = "box"
+		}
+		if service.Volumes != nil {
+			attrs["label"] += "\\n--" + strings.Join(service.Volumes, "\\n--")
 		}
 		attrs["label"] = fmt.Sprintf("\"%s\"", attrs["label"])
 		graph.AddNode(project, name, attrs)
